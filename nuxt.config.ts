@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   modules: ["@nuxt/icon", "@nuxt/fonts", "@nuxtjs/i18n", "@nuxtjs/tailwindcss"],
   runtimeConfig: {
     public: {
-      apiUrl: "htpp://localhost:3001",
+      apiUrl: "http://localhost:3001",
     },
   },
   i18n: {

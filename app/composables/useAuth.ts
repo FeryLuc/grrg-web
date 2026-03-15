@@ -36,6 +36,18 @@ export const useAuth = () => {
     user.value = null;
   };
 
+  const register = async (email: string, password: string) => {
+    const data = await $fetch<{ accessToken: string }>("/auth/register", {
+      baseURL: config.public.apiUrl as string,
+      method: "POST",
+      body: { email, password },
+      credentials: "include",
+    });
+    accessToken.value = data.accessToken;
+    const payload = JSON.parse(atob(data.accessToken.split(".")[1]!));
+    user.value = { id: payload.sub, email: payload.email };
+  };
+
   const refresh = async () => {
     // le refresh_token est envoyé automatiquement via le cookie httpOnly
     const data = await $fetch<{ accessToken: string }>("/auth/refresh", {
@@ -50,5 +62,13 @@ export const useAuth = () => {
 
   const isAuthenticated = computed(() => !!accessToken.value);
 
-  return { accessToken, user, login, logout, refresh, isAuthenticated };
+  return {
+    accessToken,
+    user,
+    login,
+    logout,
+    register,
+    refresh,
+    isAuthenticated,
+  };
 };
