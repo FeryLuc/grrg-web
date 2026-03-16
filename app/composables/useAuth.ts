@@ -8,9 +8,11 @@ export const useAuth = () => {
     () => null,
   );
 
+  const baseURL = config.public.apiUrl as string;
+
   const login = async (email: string, password: string) => {
     const data = await $fetch<{ accessToken: string }>("/auth/login", {
-      baseURL: config.public.apiUrl as string,
+      baseURL,
       method: "POST",
       body: { email, password },
       // nécessaire pour que le navigateur envoie/reçoive le cookie refresh_token
@@ -24,7 +26,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     await $fetch("/auth/logout", {
-      baseURL: config.public.apiUrl as string,
+      baseURL,
       method: "POST",
       // le guard JwtAuthGuard du backend requiert le Bearer token
       headers: accessToken.value
@@ -38,7 +40,7 @@ export const useAuth = () => {
 
   const register = async (email: string, password: string) => {
     const data = await $fetch<{ accessToken: string }>("/auth/register", {
-      baseURL: config.public.apiUrl as string,
+      baseURL,
       method: "POST",
       body: { email, password },
       credentials: "include",
@@ -49,10 +51,10 @@ export const useAuth = () => {
   };
 
   const refresh = async () => {
-    // le refresh_token est envoyé automatiquement via le cookie httpOnly
     const data = await $fetch<{ accessToken: string }>("/auth/refresh", {
-      baseURL: config.public.apiUrl as string,
+      baseURL,
       method: "POST",
+      // le cookie refresh_token est envoyé automatiquement par le navigateur
       credentials: "include",
     });
     accessToken.value = data.accessToken;
